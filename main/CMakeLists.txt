@@ -13,4 +13,4 @@ idf_component_register(SRCS "main.cpp" "pitch_detector_task.cpp" ${APP_SRCS} ${H
                     REQUIRES LovyanGFX esp_adc driver
                     WHOLE_ARCHIVE)
                     
-target_include_directories(${COMPONENT_LIB} PRIVATE ${CMAKE_SOURCE_DIR}/extra_components/q/q_lib/include ${CMAKE_SOURCE_DIR}/extra_components/q/infra/include)
+target_include_directories(${COMPONENT_LIB} PRIVATE ${CMAKE_SOURCE_DIR}/extra_components/q/q_lib/include ${CMAKE_SOURCE_DIR}/extra_components/q-infra/include)

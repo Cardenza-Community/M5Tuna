@@ -294,7 +294,7 @@ void tuner_gui_task(void* pvParameter)
         // LED feedback driven by stabilized in-tune state
         static bool led_on = false;
         bool want_led = tunerUI->isInTune();
-        if (want_led != led_on)
+        if (hal->led() && want_led != led_on)
         {
             if (want_led)
                 hal->led()->set_color(HAL::Color(0, 32, 0));

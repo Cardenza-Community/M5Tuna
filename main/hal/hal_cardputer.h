@@ -20,6 +20,7 @@ namespace HAL
     class HalCardputer : public Hal
     {
     private:
+        bool _cardenza = false;
         void _init_i2c();
         void _init_display();
         void _init_keyboard();
@@ -38,6 +39,7 @@ namespace HAL
         HalCardputer() : Hal() {}
         std::string type() override
         {
+            if (_cardenza) return "Cardenza";
             switch (_board_type)
             {
             case HAL::BoardType::CARDPUTER:

@@ -12,6 +12,9 @@
 #include "common_define.h"
 #include "display/display.hpp"
 #include "esp_log.h"
+#ifdef CARDENZA_TARGET
+#include "cardenza_hal.h"
+#endif
 
 static const char* TAG = "HAL";
 
@@ -20,7 +23,7 @@ using namespace HAL;
 void HalCardputer::_init_i2c()
 {
     ESP_LOGI(TAG, "init i2c");
-    _i2c = new I2CMaster();
+    if (!_cardenza) _i2c = new I2CMaster();
 }
 
 void HalCardputer::_init_display()
@@ -40,7 +43,7 @@ void HalCardputer::_init_display()
 void HalCardputer::_init_keyboard()
 {
     ESP_LOGI(TAG, "init keyboard");
-    _keyboard = new KEYBOARD::Keyboard(this);
+    _keyboard = new KEYBOARD::Keyboard(this, _cardenza ? BoardType::CARDPUTER : BoardType::AUTO_DETECT);
     _board_type = _keyboard->boardType();
 }
 
@@ -75,7 +78,7 @@ void HalCardputer::_init_speaker()
 void HalCardputer::_init_led()
 {
     ESP_LOGI(TAG, "init led");
-    _led = new LED(RGB_LED_GPIO);
+    if (!_cardenza) _led = new LED(RGB_LED_GPIO);
 }
 
 #ifdef HAVE_BATTERY
@@ -93,6 +96,17 @@ void HalCardputer::_init_wifi() { _wifi = new WiFi(_settings); }
 void HalCardputer::init()
 {
     ESP_LOGI(TAG, "HAL init");
+#ifdef CARDENZA_TARGET
+    _cardenza = cardenza_hal_detect();
+    const bool codec_ready = _cardenza && cardenza_hal_init(32, 16);
+    if (!codec_ready) {
+        _init_display();
+        _display->drawString("Cardenza audio init failed", 4, 55);
+        ESP_LOGE(TAG, "ES8156 identity/setup failed");
+        while (true) vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+    ESP_LOGI(TAG, "Cardenza: ES8156 ready; PDM microphone; RGB/battery disabled");
+#endif
 
     // Disable LoRa module NSS to prevent SPI bus conflicts
     gpio_set_direction((gpio_num_t)LORA_NSS_PIN, GPIO_MODE_OUTPUT);

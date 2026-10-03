@@ -6,16 +6,18 @@
 cmake_minimum_required(VERSION 3.16)
 
 
+option(CARDENZA "Build for Cardenza ES8156 with original PDM microphone" OFF)
+if(CARDENZA)
+    add_compile_definitions(CARDENZA_TARGET)
+endif()
 add_definitions(-DHAVE_MIC)
 file (STRINGS version.txt BUILD_NUMBER)
 set(PROJECT_VER ${BUILD_NUMBER})
 add_compile_options(-Wno-missing-field-initializers)
 add_compile_definitions(BUILD_NUMBER="${BUILD_NUMBER}")
 
+set(EXTRA_COMPONENT_DIRS "extra_components/q-infra" "extra_components/q/q_lib")
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 idf_build_set_property(MINIMAL_BUILD ON)
 project(M5Tuna)
-
-link_libraries(PUBLIC libq)
-link_libraries(PUBLIC infra)
