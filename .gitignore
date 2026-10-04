@@ -1,0 +1,4 @@
+# Local builds
+/build*/
+*.log
+sdkconfig.cardenza.old

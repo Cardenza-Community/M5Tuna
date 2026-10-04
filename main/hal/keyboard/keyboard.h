@@ -286,7 +286,7 @@ namespace KEYBOARD
         HAL::BoardType _board_type;
 
     public:
-        Keyboard(HAL::Hal* hal) : _is_caps_locked(false), _last_key_size(0), _suppress_key_until_release(false), _hal(hal), _board_type(HAL::BoardType::AUTO_DETECT)
+        Keyboard(HAL::Hal* hal, HAL::BoardType board = HAL::BoardType::AUTO_DETECT) : _is_caps_locked(false), _last_key_size(0), _suppress_key_until_release(false), _hal(hal), _board_type(board)
         {
             init();
         }
